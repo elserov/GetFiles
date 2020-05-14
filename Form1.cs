@@ -21,6 +21,8 @@ namespace GetFiles
         }
         private int count = 0;
         private int time = 0;
+        bool ButtonEnabled = false;
+        bool cancel = false;
         Thread t;
         Thread t1;
 
@@ -32,9 +34,9 @@ namespace GetFiles
                 foreach (var part in path.Split(Path.DirectorySeparatorChar))
                     childs = FindOrCreateNode(childs, part).Nodes;
             }
-            label6.Text = "Поиск завершён.";
-            timer1.Stop();
-            label5.Text = "Время поиска " + time;
+            label6.Text = "Файлов найдено "+ count;
+            //timer1.Stop();
+            
         }
 
         private TreeNode FindOrCreateNode(TreeNodeCollection coll, string name)
@@ -46,8 +48,11 @@ namespace GetFiles
 
         private void button2_Click(object sender, EventArgs e)
         {
-            label5.Text = ""; label6.Text = "";
+            label5.Text = ""; label6.Text = ""; label7.Text = "";
+            cancel = false;
+
             timer1.Start();
+            
             treeView1.Nodes.Clear();
 
             t = new Thread(delegate () { DirSearch(textBox1.Text); });
@@ -63,12 +68,35 @@ namespace GetFiles
             List<string> dirfiles = new List<string>();
             foreach (string d in Directory.GetDirectories(dir))
             {
+                if (cancel)
+                {
+                    timer1.Stop();
+                    label5.Text = "Поиск остановлен";
+                    break;
+                }
                 try
                 {
                     foreach (string f in Directory.GetFiles(d, textBox2.Text))
                     {
-
-                        dirfiles.Add(f);
+                        if (File.Exists(f))
+                        {
+                            if (textBox3.Text != "")
+                            {
+                                string tmp = File.ReadAllText(f);
+                                if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
+                                {
+                                    count++;
+                                    label7.Text = f;
+                                    dirfiles.Add(f);
+                                }
+                            }
+                            else
+                            {
+                                count++;
+                                label7.Text = f;
+                                dirfiles.Add(f);
+                            }
+                        }
                     }
                     DirSearch(d);
                 }
@@ -80,10 +108,35 @@ namespace GetFiles
         }
         void DirRootSearch()
         {
+            
             List<string> dirfiles = new List<string>();
             foreach (string i in Directory.GetFiles(textBox1.Text, textBox2.Text))
             {
-                dirfiles.Add(i);
+                if (cancel)
+                {
+                    timer1.Stop();
+                    label5.Text = "Поиск остановлен";
+                    break;
+                }
+                if (File.Exists(i))
+                {
+                    if (textBox3.Text!="")
+                    {
+                        string tmp = File.ReadAllText(i);
+                        if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
+                        {
+                            count++;
+                            label7.Text = i;
+                            dirfiles.Add(i);
+                        }
+                    }
+                    else
+                    {
+                        count++;
+                        label7.Text = i;
+                        dirfiles.Add(i);
+                    }
+                }
             }
             BeginInvoke(new MyDelegate(treeDir), dirfiles);
             //BuildTree( dirfiles);
@@ -116,13 +169,79 @@ namespace GetFiles
         private void timer1_Tick_1(object sender, EventArgs e)
         {
             time++;
-            label5.Text = time.ToString();
+            label5.Text = "Время :"+time.ToString()+" сек.";
+            if(!t.IsAlive && !t1.IsAlive)
+            {
+                timer1.Stop();
+                label5.Text = "Время выполнения :" + time.ToString() + " сек.";
+                label7.Text = "";
+            }
+
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            t.Suspend();
-            t1.Suspend();
+            if (ButtonEnabled)
+            {
+                timer1.Start();
+                button1.Text = "Пауза";
+                ButtonEnabled = false;
+                try
+                {
+                    t.Resume();
+                    t1.Resume();
+                    
+                }
+                catch
+                {
+                }
+                    
+                       
+            }
+            else
+            {
+                timer1.Stop();
+                button1.Text = "Старт";
+                ButtonEnabled = true;
+                try
+                {
+                    t.Suspend();
+                    t1.Suspend();
+                    
+                }
+                catch
+                {
+                }
+                
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            cancel = true;
+        }
+
+        private void textBox1_DoubleClick(object sender, EventArgs e)
+        {
+            string path = null;
+            using (var dialog = new FolderBrowserDialog())
+                if (dialog.ShowDialog() == DialogResult.OK)
+                    path = dialog.SelectedPath;
+            textBox1.Text = path;
+        }
+
+        private void textBox1_MouseHover(object sender, EventArgs e)
+        {
+            Thread.Sleep(50);
+            ToolTip t = new ToolTip();
+            t.SetToolTip(textBox1, "Двойной клик откроет форму выбора");
+        }
+
+        private void textBox2_MouseHover(object sender, EventArgs e)
+        {
+            Thread.Sleep(50);
+            ToolTip t2 = new ToolTip();
+            t2.SetToolTip(textBox2, "Пример: *.* | * | *.txt");
         }
     }
 }
