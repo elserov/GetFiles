@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.button1 = new System.Windows.Forms.Button();
+            this.bt_Pause = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -38,25 +38,25 @@
             this.label3 = new System.Windows.Forms.Label();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.label4 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
+            this.bt_Find = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
+            this.bt_Stop = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
-            // button1
+            // bt_Pause
             // 
-            this.button1.CausesValidation = false;
-            this.button1.Location = new System.Drawing.Point(31, 379);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Пауза";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.bt_Pause.CausesValidation = false;
+            this.bt_Pause.Location = new System.Drawing.Point(31, 395);
+            this.bt_Pause.Name = "bt_Pause";
+            this.bt_Pause.Size = new System.Drawing.Size(75, 23);
+            this.bt_Pause.TabIndex = 0;
+            this.bt_Pause.Text = "Пауза";
+            this.bt_Pause.UseVisualStyleBackColor = true;
+            this.bt_Pause.Click += new System.EventHandler(this.bt_Pause_Click);
             // 
             // label1
             // 
@@ -128,15 +128,15 @@
             this.label4.Size = new System.Drawing.Size(0, 13);
             this.label4.TabIndex = 9;
             // 
-            // button2
+            // bt_Find
             // 
-            this.button2.Location = new System.Drawing.Point(663, 313);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(107, 41);
-            this.button2.TabIndex = 10;
-            this.button2.Text = "Найти";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.bt_Find.Location = new System.Drawing.Point(663, 313);
+            this.bt_Find.Name = "bt_Find";
+            this.bt_Find.Size = new System.Drawing.Size(107, 41);
+            this.bt_Find.TabIndex = 10;
+            this.bt_Find.Text = "Найти";
+            this.bt_Find.UseVisualStyleBackColor = true;
+            this.bt_Find.Click += new System.EventHandler(this.bt_Find_Click);
             // 
             // label5
             // 
@@ -155,7 +155,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(28, 310);
+            this.label6.Location = new System.Drawing.Point(28, 327);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(54, 13);
             this.label6.TabIndex = 12;
@@ -164,22 +164,22 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(28, 341);
+            this.label7.Location = new System.Drawing.Point(28, 360);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(35, 13);
             this.label7.TabIndex = 13;
             this.label7.Text = "Файл";
             // 
-            // button3
+            // bt_Stop
             // 
-            this.button3.CausesValidation = false;
-            this.button3.Location = new System.Drawing.Point(141, 379);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 14;
-            this.button3.Text = "Стоп";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.bt_Stop.CausesValidation = false;
+            this.bt_Stop.Location = new System.Drawing.Point(137, 395);
+            this.bt_Stop.Name = "bt_Stop";
+            this.bt_Stop.Size = new System.Drawing.Size(75, 23);
+            this.bt_Stop.TabIndex = 14;
+            this.bt_Stop.Text = "Стоп";
+            this.bt_Stop.UseVisualStyleBackColor = true;
+            this.bt_Stop.Click += new System.EventHandler(this.bt_Stop_Click);
             // 
             // openFileDialog1
             // 
@@ -190,11 +190,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.bt_Stop);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.bt_Find);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.textBox3);
@@ -203,7 +203,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.bt_Pause);
             this.Name = "GetFiles";
             this.Text = "GetFiles";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GetFiles_FormClosing);
@@ -215,7 +215,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button bt_Pause;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
@@ -224,12 +224,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button bt_Find;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button bt_Stop;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
