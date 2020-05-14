@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,6 +14,7 @@ namespace GetFiles
 {
     public partial class Form3 : Form
     {
+        public delegate void MyDelegate();
         public Form3()
         {
             InitializeComponent();
@@ -25,7 +27,6 @@ namespace GetFiles
         {
             boolstart = false;
             // timer1.Stop();
-
 
         }
 
@@ -49,10 +50,10 @@ namespace GetFiles
         }
         private void BuildTree(DirectoryInfo directoryInfo, TreeNodeCollection addInMe)
         {
-            //TreeNode curNode = new TreeNode()
+            TreeNode curNode = new TreeNode();
             if (Directory.EnumerateFiles(textBox1.Text, textBox2.Text, SearchOption.AllDirectories).Any())
             {
-                TreeNode curNode = addInMe.Add("Folder", directoryInfo.Name);
+                //curNode = addInMe.Add("Folder", directoryInfo.Name);
             }
             //Перебираем папки.
             foreach (DirectoryInfo subdir in directoryInfo.GetDirectories())
@@ -69,14 +70,17 @@ namespace GetFiles
                 string tmp = File.ReadAllText(file.FullName);
                 if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
                 {
-                    curNode.Nodes.Add("File", file.Name);
+                    //curNode.Nodes.Add("File", file.Name);
                 }
             }
+            label1.Text = "Найдено файлов - ";
         }
         private void tree()
         {
             label1.Text = "Запуск";
             treeView1.Nodes.Clear();
+
+            BeginInvoke(new MyDelegate(IzmeniElement));
 
             DirectoryInfo di;
 
@@ -87,7 +91,7 @@ namespace GetFiles
                 if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
                 {
                     TreeNode n = new TreeNode(file.Name);
-                    treeView1.Nodes.Add(n);
+                    //treeView1.Nodes.Add(n);
                 }
             }
 
@@ -108,10 +112,33 @@ namespace GetFiles
             }
             catch { }
         }
+        public void IzmeniElement()
+        {
+            label2.Visible = false; // скрыли элемент
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            tree();
+            //tree();
+
+            Thread clientThread = new Thread(new ThreadStart(tree));
+            clientThread.IsBackground = true;
+            clientThread.Start();
+
+            //Task task = new Task(tree);
+            ////task.ContinueWith(CodeAfterJoin);
+            //task.Start();
+
+            // Thread t = new Thread(delegate () { tree(); });
+            // t.Start();
         }
+    }
+    static class treeFiles
+    {
+        static List<string> dir { get; set; }
+        static List<string> name { get; set; }
+        static List<string> idTree { get; set; }
+
+
     }
 }
