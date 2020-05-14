@@ -17,7 +17,8 @@ namespace GetFiles
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new GetFiles());
-            Application.Run(new Form2());
+            //Application.Run(new Form2());
+            Application.Run(new Form3());
         }
     }
 }
