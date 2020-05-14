@@ -17,6 +17,17 @@ namespace GetFiles
         {
             InitializeComponent();
         }
+        private int count = 0;
+        private int time = 0;
+        private bool boolstart;
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            boolstart = false;
+            // timer1.Stop();
+
+
+        }
 
         private void Form3_Load(object sender, EventArgs e)
         {
@@ -36,19 +47,30 @@ namespace GetFiles
                 }
             }
         }
-        private void BuildTree(System.IO.DirectoryInfo directoryInfo, TreeNodeCollection addInMe)
+        private void BuildTree(DirectoryInfo directoryInfo, TreeNodeCollection addInMe)
         {
-            TreeNode curNode = addInMe.Add("Folder", directoryInfo.Name);
-            //Перебираем папки.
-            foreach (System.IO.DirectoryInfo subdir in directoryInfo.GetDirectories())
+            //TreeNode curNode = new TreeNode()
+            if (Directory.EnumerateFiles(textBox1.Text, textBox2.Text, SearchOption.AllDirectories).Any())
             {
-                BuildTree(subdir, curNode.Nodes);
+                TreeNode curNode = addInMe.Add("Folder", directoryInfo.Name);
+            }
+            //Перебираем папки.
+            foreach (DirectoryInfo subdir in directoryInfo.GetDirectories())
+            {
+                if (Directory.EnumerateFiles(textBox1.Text, textBox2.Text, SearchOption.AllDirectories).Any())
+                {
+                    BuildTree(subdir, curNode.Nodes);
+                }
             }
 
             //Перебираем файлы
-            foreach (System.IO.FileInfo file in directoryInfo.GetFiles())
+            foreach (FileInfo file in directoryInfo.GetFiles(textBox2.Text))
             {
-                curNode.Nodes.Add("File", file.Name);
+                string tmp = File.ReadAllText(file.FullName);
+                if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
+                {
+                    curNode.Nodes.Add("File", file.Name);
+                }
             }
         }
         private void tree()
