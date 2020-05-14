@@ -88,37 +88,37 @@ namespace GetFiles
             //Перебираем папки.
             foreach (DirectoryInfo subdir in directoryInfo.GetDirectories())
             {
-                if (boolstart)
-                {
-                    treeView1.BeginUpdate();
+                //if (boolstart)
+                //{
+                    //treeView1.BeginUpdate();
                     if (Directory.EnumerateFiles(textBox1.Text, textBox2.Text, SearchOption.AllDirectories).Any())
                     {
                         //count++;
                         BuildTree(subdir, curNode.Nodes);
                     }
-                    treeView1.EndUpdate();
-                }
+                    //treeView1.EndUpdate();
+                //}
             }
             //Перебираем файлы
             foreach (FileInfo file in directoryInfo.GetFiles(textBox2.Text))
             {
                 //count++;
-                if (boolstart)
-                {
-                    treeView1.BeginUpdate();
-                    if (textBox3.Text == "")
-                    {
+                //if (boolstart)
+                //{
+                    //treeView1.BeginUpdate();
+                    //if (textBox3.Text == "")
+                    //{
 
-                        TreeNode n = new TreeNode(file.Name);
-                        count++;
-                        treeView1.Nodes.Add(n);
+                    //    TreeNode n = new TreeNode(file.Name);
+                    //    count++;
+                    //    treeView1.Nodes.Add(n);
 
 
-                    }
-                    else
-                    {
-                        if (File.Exists(file.FullName))
-                        {
+                    //}
+                    //else
+                    //{
+                        //if (File.Exists(file.FullName))
+                        //{
                             string tmp = File.ReadAllText(file.FullName);
                             if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
                             {
@@ -127,11 +127,11 @@ namespace GetFiles
                                 treeView1.Nodes.Add(n);
 
                             }
-                        }
+                        //}
                         
-                    }
-                    treeView1.EndUpdate();
-                }
+                    //}
+                    //treeView1.EndUpdate();
+                //}
             }
             label1.Text = "Найдено файлов - " + count;
             //label2.Text = "Время выполнения - " + time;
@@ -175,22 +175,22 @@ namespace GetFiles
             DirectoryInfo rootDir = new DirectoryInfo(textBox1.Text);
             foreach (var file in rootDir.GetFiles(textBox2.Text))
             {
-                if (boolstart)
-                {
-                    treeView1.BeginUpdate();
-                    if (textBox3.Text == "")
-                    {
+                //if (boolstart)
+                //{
+                    //treeView1.BeginUpdate();
+                    //if (textBox3.Text == "")
+                    //{
                         
-                            TreeNode n = new TreeNode(file.Name);
-                            count++;
-                            treeView1.Nodes.Add(n);
+                    //        TreeNode n = new TreeNode(file.Name);
+                    //        count++;
+                    //        treeView1.Nodes.Add(n);
 
                         
-                    }
-                    else
-                    {
-                        if (File.Exists(file.FullName))
-                        { 
+                    //}
+                    //else
+                    //{
+                        //if (File.Exists(file.FullName))
+                        //{ 
                             string tmp = File.ReadAllText(file.FullName);
                             if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
                             {
@@ -199,12 +199,12 @@ namespace GetFiles
                                 treeView1.Nodes.Add(n);
 
                             }
-                        }
+                        //}
 
-                    }
+                    //}
                     
-                    treeView1.EndUpdate();
-                }
+                    //treeView1.EndUpdate();
+                //}
 
             }
 
