@@ -14,6 +14,7 @@ namespace GetFiles
 {
     public partial class Form2 : Form
     {
+        public delegate void MyDelegate(List<string> files);
         public Form2()
         {
             InitializeComponent();
@@ -30,36 +31,10 @@ namespace GetFiles
 
             
         }
-        private List<string> GetRecursFiles(string start_path)
-        {
-            List<string> ls = new List<string>();
-            try
-            {
-                string[] folders = Directory.GetDirectories(start_path);
-                foreach (string folder in folders)
-                {
-                    ls.Add("Папка: " + folder);
-                    ls.AddRange(GetRecursFiles(folder));
-                    TreeNode curNode = treeView1.Nodes.Add("Folder", folder);
-                    treeView1.Nodes.Add(folder);
-                }
-                string[] files = Directory.GetFiles(start_path);
-                foreach (string filename in files)
-                {
-                    ls.Add("Файл: " + filename);
-                    treeView1.Nodes.Add(filename);
-                }
-            }
-            catch (System.Exception e)
-            {
-                //MessageBox.Show(e.Message);
-            }
-            return ls;
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            treeView1.Nodes.Clear();
             time = 0;
             timer1.Start();
             count = 0;
@@ -166,71 +141,36 @@ namespace GetFiles
 
         private void work()
         {
-            label1.Text = "Запуск";
-            treeView1.Nodes.Clear();
-            //treeView1.BeginUpdate();
+            List<string> files = Directory.EnumerateFiles(textBox1.Text, textBox2.Text, SearchOption.AllDirectories).ToList();
+            //BuildTree(files);
 
-            DirectoryInfo di;
-
-            DirectoryInfo rootDir = new DirectoryInfo(textBox1.Text);
-            foreach (var file in rootDir.GetFiles(textBox2.Text))
+            BeginInvoke(new MyDelegate(treeDir), files);
+            timer1.Stop();
+            if(time == 0) { label2.Text = "0"; }
+        }
+        private void BuildTree(List<string> list)
+        {
+            foreach (var path in list)
             {
-                //if (boolstart)
-                //{
-                    //treeView1.BeginUpdate();
-                    //if (textBox3.Text == "")
-                    //{
-                        
-                    //        TreeNode n = new TreeNode(file.Name);
-                    //        count++;
-                    //        treeView1.Nodes.Add(n);
-
-                        
-                    //}
-                    //else
-                    //{
-                        //if (File.Exists(file.FullName))
-                        //{ 
-                            string tmp = File.ReadAllText(file.FullName);
-                            if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1)
-                            {
-                                TreeNode n = new TreeNode(file.Name);
-                                count++;
-                                treeView1.Nodes.Add(n);
-
-                            }
-                        //}
-
-                    //}
-                    
-                    //treeView1.EndUpdate();
-                //}
-
-            }
-
-            try
-            {
-
-                string[] root = Directory.GetDirectories(textBox1.Text);
-
-                //Проходимся по всем полученным подкаталогам.
-                foreach (string s in root)
+                var childs = treeView1.Nodes;
+                foreach (var part in path.Split(Path.DirectorySeparatorChar))
                 {
-                    try
-                    {
-                        di = new DirectoryInfo(s);
-                        if (boolstart)
-                        {
-                            
-                            BuildTree(di, treeView1.Nodes);
-                             
-                        }
-                    }
-                    catch { }
+                    childs = FindOrCreateNode(childs, part).Nodes;
                 }
             }
-            catch { }
-            //treeView1.EndUpdate();
+        }
+        private TreeNode FindOrCreateNode(TreeNodeCollection coll, string name)
+        {
+            var found = coll.Find(name.ToLower(), false);
+            if (found.Length > 0)
+            {
+                return found[0];
+            }
+            return coll.Add(name.ToLower(), name);
+        }
+        public void treeDir(List<string> files)
+        {
+            BuildTree(files);
         }
     }
 }
