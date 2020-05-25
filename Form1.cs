@@ -17,15 +17,19 @@ namespace GetFiles
         private int time = 0; // таймер 
         bool ButtonEnabled = false; // кнопка паузы
         bool cancel = false; // кнопка отмены
+
         Thread t;
         Thread t1;
         private void GetFiles_Load(object sender, EventArgs e)// загрузка формы
         {
-            string[] mass = File.ReadAllLines(@"setting.txt"); // чтение файла настроек
+            if (File.Exists(@"setting.txt"))
+            {
+                string[] mass = File.ReadAllLines(@"setting.txt"); // чтение файла настроек
 
-            textBox1.Text = mass[0];
-            textBox2.Text = mass[1];
-            textBox3.Text = mass[2];
+                textBox1.Text = mass[0];
+                textBox2.Text = mass[1];
+                textBox3.Text = mass[2];
+            }
 
         }
         private void GetFiles_FormClosing(object sender, FormClosingEventArgs e)// закрытие формы
@@ -45,17 +49,22 @@ namespace GetFiles
 
             cancel = false;// перевод переменной отмены в состояние выкл
 
-            timer1.Start();// старт счетчика
-            
+
             treeView1.Nodes.Clear(); // очистка дерева
 
-            // запуск поиска в потоки
-            t = new Thread(delegate () { DirSearch(textBox1.Text); });
-            t.IsBackground = true;
-            t.Start();
-            t1 = new Thread(delegate () { DirRootSearch(); });
-            t1.IsBackground = true;
-            t1.Start();
+            if (Directory.Exists(textBox1.Text))
+            {
+                timer1.Start();// старт счетчика
+                // запуск поиска в потоки
+                t = new Thread(delegate () { DirSearch(textBox1.Text); });
+                t.IsBackground = true;
+                t.Start();
+                t1 = new Thread(delegate () { DirRootSearch(); });
+                t1.IsBackground = true;
+                t1.Start();
+            }
+            else { MessageBox.Show("Папки для поиска не существует"); }
+
 
         }
         private void bt_Pause_Click(object sender, EventArgs e)// кнопка паузы
@@ -70,7 +79,7 @@ namespace GetFiles
                     t.Resume(); // старт
                     t1.Resume();
                 }
-                catch{}
+                catch { }
             }
             else
             {
@@ -82,7 +91,7 @@ namespace GetFiles
                     t.Suspend(); // пауза
                     t1.Suspend();
                 }
-                catch{}
+                catch { }
             }
         }
         private void bt_Stop_Click(object sender, EventArgs e)// кнопка остановки поиска
@@ -116,8 +125,8 @@ namespace GetFiles
         private void timer1_Tick_1(object sender, EventArgs e)// функция таймера
         {
             time++;
-            label5.Text = "Время :"+time.ToString()+" сек.";
-            if(!t.IsAlive && !t1.IsAlive)// отслеживание завершения поиска
+            label5.Text = "Время :" + time.ToString() + " сек.";
+            if (!t.IsAlive || !t1.IsAlive)// отслеживание завершения поиска
             {
                 timer1.Stop();
                 label5.Text = "Время выполнения :" + time.ToString() + " сек.";
@@ -136,7 +145,7 @@ namespace GetFiles
                     childs = FindOrCreateNode(childs, part).Nodes;
                 }
             }
-            label6.Text = "Файлов найдено "+ count;
+            label6.Text = "Файлов найдено " + count;
         }
         private TreeNode FindOrCreateNode(TreeNodeCollection coll, string name)// функция поиска или создания ветки для дерева каталогов
         {
@@ -150,12 +159,13 @@ namespace GetFiles
         void DirSearch(string dir)// рекурсивный поиск папок и файлов
         {
             List<string> dirfiles = new List<string>();
+
             foreach (string d in Directory.GetDirectories(dir))
             {
                 if (cancel)// нажатие кнопки отмены
                 {
                     timer1.Stop();
-                    label5.Text = "Поиск остановлен";
+                    //label5.Text = "Поиск остановлен";
                     break;
                 }
                 try
@@ -185,9 +195,10 @@ namespace GetFiles
                     DirSearch(d);
                 }
                 catch
-                {                    
+                {
                 }
             }
+
             BeginInvoke(new MyDelegate(treeDir), dirfiles);// передача в построение каталога
         }
         void DirRootSearch()// поиск файлов в корне директории 
@@ -203,7 +214,7 @@ namespace GetFiles
                 }
                 if (File.Exists(i))
                 {
-                    if (textBox3.Text!="")
+                    if (textBox3.Text != "")
                     {
                         string tmp = File.ReadAllText(i); // чтение файла
                         if (tmp.IndexOf(textBox3.Text, StringComparison.CurrentCulture) != -1) // поиск по содержимому
